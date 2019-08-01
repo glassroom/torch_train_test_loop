@@ -16,7 +16,7 @@ class LoopComponent():
         Iteration
     +------->-------+
     |               |
-    |   +-----------v-----------+-----------------------+--    
+    |   +-----------v-----------+-----------------------+--
     |   |   Loop component #1   |   Loop component #2   |   ...
     |   +-----------------------+-----------------------+--
     |   |   on_train_begin -----+-> on_train_begin -----+-> ...
@@ -61,8 +61,9 @@ class TrainTestLoop():
         train(n_epochs): train model for n_epochs: int.
         test(train_data): test model on previously unseen train_data:
             iterable for which len() returns length.
-        stop(): stop loop early and invoke the 'on_train_end' callbacks
-            of all loop components. Any component can call stop().
+        stop(): stop early and, if training, invoke the 'on_train_end'
+            callbacks of all loop components. Note that any component
+            of the loop can call stop() at any time.
 
     Sample usage:
         >>> loop = TrainTestLoop(model, components, train_data, valid_data)
