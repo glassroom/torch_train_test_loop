@@ -63,15 +63,15 @@ If you regularly find yourself digging through code path dependencies to figure 
 
 Each additional component thus adds a layer of additional functionality across all predefined callback points in a loop.
 
-Loop instances store components in a standard Python list, so you can dynamically insert, delete, replace, and reorder them at any time:
+Loop components are stored in a standard Python list, so you can dynamically insert, delete, replace, and reorder them at any time:
 
 ```python
 # Create a train/test loop.
-components = (Initialize(), ManageBatch(), ManageOptim(), ManageStats())
-loop = TrainTestLoop(model, components, train_data, valid_data)
+my_components = (MyInitializer(), MyBatchProcessor(), MyOptimManager(), MyStats())
+loop = TrainTestLoop(my_model, my_components, train_data, valid_data)
 
 # Insert a new component in the second position.
-loop.components.insert(1, MixupBatches())
+loop.components.insert(1, MyPreprocessing())
 
 # Delete the last component.
 del loop.components[-1]
