@@ -30,13 +30,13 @@ print(loop.components[-1].value)
 
 We were unable to find a simple, composable, standalone tool for manipulating training loops *without* the overhead and complexity of a full-blown framework.
 
-If you regularly find yourself digging through code dependencies to figure out how to try something new in your training loop, this tool is for you. It tries to do the bare minimum necessary for composing loops without getting in your way. The code is meant to be easy to understand and modify, filling just over two screens of a typical laptop display.
+If you regularly find yourself digging through code path dependencies to figure out how to try something new in your training loop, this tool is for you. It tries to do the bare minimum necessary for composing loops without getting in your way. The code is meant to be easy to understand and modify, filling just over two screens of a typical laptop display.
 
 ## Overview
 
 **torch_train_test_loop** consists of just two classes, `TrainTestLoop` and `LoopComponent`, that work together:
 
-* `TrainTestLoop` contains barebones logic for running training and testing loops, keeping track of number of epochs, number of batches, and other control-flow variables. All other computations in the loop are performed by invoking callbacks of one or more `LoopComponent` instances that can access and modify loop state at predefined points on each iteration.
+* `TrainTestLoop` contains barebones logic for running training/testing loops and keeping track of number of epochs, number of batches, and other control-flow variables. All other computations are performed by invoking callbacks of one or more `LoopComponent` instances, which access and modify loop state at predefined points on each iteration.
 
 * `LoopComponent` contains callback methods that are invoked by a `TrainTestLoop` instance at predefined points on each iteration. For a list of predefined callback methods, see the [class definition](torch_train_test_loop.py). If a loop has multiple components, their callbacks are invoked in the following order:
 
@@ -61,9 +61,9 @@ If you regularly find yourself digging through code dependencies to figure out h
 +-------------------------------<------------------------------+
 ```
 
-Each additional component adds a layer of additional functionality across all predefined points in the loop.
+Each additional component thus adds a layer of additional functionality across all predefined callback points in a loop.
 
-Loop instances store components in a standard Python list, so they can be dynamically inserted, deleted, replaced, and reordered at any time:
+Loop instances store components in a standard Python list, so you can dynamically insert, delete, replace, and reorder them at any time:
 
 ```python
 # Create a train/test loop.
@@ -77,7 +77,7 @@ loop.components.insert(1, MixupBatches())
 del loop.components[-1]
 ```
 
-The code is as simple as we could make it (e.g., we refrained from building in a fancier callback-handling mechanism).
+The code is as simple as we could make it (e.g., we refrained from building in a fancier callback-handling mechanism) and as Pythonic as we could make it (e.g., when invoking a call method, we explicitly pass a reference to the loop object, instead of, say, dynamically binding callbacks to the loop object).
 
 ## Installation
 
