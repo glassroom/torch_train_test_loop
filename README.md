@@ -66,11 +66,11 @@ Each additional component adds a layer of additional functionality across all pr
 Components are stored in a list, so they can be dynamically inserted, deleted, replaced, and reordered at any time with built-in Python tools:
 
 ```python
-# Create a model.
+# Create a train/test loop.
 components = (Initialize(), ManageBatch(), ManageOptim(), ManageStats())
 loop = TrainTestLoop(model, components, train_data, valid_data)
 
-# Insert a new component on the second position.
+# Insert a new component in the second position.
 loop.components.insert(1, MixupBatches())
 
 # Delete the last component.
