@@ -1,6 +1,4 @@
-# torch_train_test_loop
-
-Composable training/testing of PyTorch deep learning models with minimal overhead:
+# Composable training/testing of deep learning models with minimal overhead:
 
 ```python
 from torch_train_test_loop import TrainTestLoop, LoopComponent
