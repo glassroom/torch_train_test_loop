@@ -63,7 +63,7 @@ If you regularly find yourself digging through code dependencies to figure out h
 
 Each additional component adds a layer of additional functionality across all predefined points in the loop.
 
-Components are stored in a list, so they can be dynamically inserted, deleted, replaced, and reordered at any time with built-in Python tools:
+Loop instances store components in a standard Python list, so they can be dynamically inserted, deleted, replaced, and reordered at any time:
 
 ```python
 # Create a train/test loop.
