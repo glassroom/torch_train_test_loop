@@ -61,7 +61,7 @@ If you regularly find yourself digging through code path dependencies to figure 
 +-------------------------------<------------------------------+
 ```
 
-Each additional component thus adds a layer of additional functionality across all predefined callback points in a loop.
+Each additional component thus adds new a layer of functionality to all predefined callback points in a loop.
 
 Loop components are stored in a standard Python list, so you can dynamically insert, delete, replace, and reorder them at any time:
 
