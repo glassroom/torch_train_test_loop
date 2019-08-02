@@ -1,10 +1,8 @@
 import torch
 import contextlib
 
-
 class EarlyStopException(Exception):
     pass
-
 
 class LoopComponent():
     r"""
@@ -41,7 +39,6 @@ class LoopComponent():
     def on_batch_end(self, loop):     pass  # called by loop at end of each batch
     def on_epoch_end(self, loop):     pass  # called by loop at end of each epoch
     def on_train_end(self, loop):     pass  # called by loop at end of training
-
 
 class TrainTestLoop():
     r"""
