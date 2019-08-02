@@ -1,29 +1,47 @@
-# Composable training/testing loops for PyTorch
+# torch_train_test_loop
 
 Composable training/testing of PyTorch deep learning models with minimal overhead:
 
 ```python
 from torch_train_test_loop import TrainTestLoop, LoopComponent
 
-# Create train/test loop with previously specified model, loop components, and data.
-loop = TrainTestLoop(my_model, my_loop_components, train_data, valid_data)
+class MainLoop(LoopComponent):
 
-# Define new kind of loop component.
-class SaveBestSoFar(LoopComponent):
+    def on_train_begin(self, loop):
+        loop.loss_func = CrossEntropyLoss()
+        loop.optimizer = MyOptimizer(loop.model.parameters(), lr=3e-4)
+        loop.scheduler = MyScheduler(loop.optimizer, loop.n_optim_steps)
 
-    def __init__(self, path):
-        self.path = path
-        self.value = 0.0
+    def on_forward_pass(self, loop):
+        model, batch = (loop.model, loop.batch)
+        loop.scores = model(batch.data)
 
-    def on_epoch_end(self, loop):
-        if (loop.my_metric > self.value) and (loop.is_validating):
-            self.value = loop.my_metric.item()
-            torch.save(loop.model.state_dict(), self.path)
+    def on_loss_compute(self, loop):
+        scores, labels = (loop.scores, loop.batch.labels)
+        loop.loss = loop.loss_func(scores, labels)
 
-# Add new component to loop, train model, and show component state.
-loop.components.append(SaveBestSoFar('./best_model.pth'))
-loop.train(n_epochs=30)
-print(loop.components[-1].value)
+    def on_backward_pass(self, loop):
+        loop.loss.backward()
+
+    def on_optim_step(self, loop):
+        loop.optimizer.step()
+        loop.scheduler.step()
+
+    def on_train_end(self, loop):
+        print("Done.")
+
+class SaveModel(LoopComponent):
+
+    def on_train_end(self, loop):
+        torch.save(loop.model.state_dict(), './model_state.pth')
+        print("Saved.")
+
+loop = TrainTestLoop(my_model, [MainLoop(), SaveModel()], my_train_data, my_valid_data)
+loop.train(n_epochs=10)
+
+Done.
+Saved.
+
 ```
 
 ## Why?
