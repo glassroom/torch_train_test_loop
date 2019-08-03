@@ -84,7 +84,6 @@ class TrainTestLoop():
         with torch.no_grad() if not self.is_training else contextlib.suppress():
             self._components_do('on_epoch_begin')
             for self.batch_num, self.batch in enumerate(iter(data)):
-                if self.is_training: self.model.zero_grad()
                 self._components_do('on_batch_begin', 'on_forward_pass', 'on_loss_compute')
                 if self.is_training:
                     self._components_do('on_backward_pass', 'on_optim_step')
