@@ -46,8 +46,6 @@ Done.
 Saved.
 ```
 
-```
-
 ## Why?
 
 We were unable to find a simple, composable, standalone tool for manipulating training loops *without* the overhead and complexity of a full-blown framework.
