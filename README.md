@@ -59,7 +59,7 @@ If you regularly find yourself digging through code path dependencies to figure 
 
 **torch_train_test_loop** consists of just two classes, `TrainTestLoop` and `LoopComponent`, that work together:
 
-* `TrainTestLoop` contains logic for running training/validation and testing loops. It manages epochs and batches, iterates over datasets, sets torch.no_grad() contexts for validating after each training epoch and for testing afterwards, and manages other variables that control loop state. All other computations are performed by invoking callbacks of one or more `LoopComponent` instances at predefined points on each iteration. For more details, see the [class docstring](torch_train_test_loop.py).
+* `TrainTestLoop` contains logic for running training/validation and testing loops. It manages epochs and batches, iterates over datasets, sets a torch.no_grad() context for validating and testing, and manages other variables that control loop state. All other computations are performed by invoking callbacks of one or more `LoopComponent` instances at predefined points on each iteration. For more details, see the [class docstring](torch_train_test_loop.py).
 
 * `LoopComponent` contains callback methods invoked by a `TrainTestLoop` instance at predefined points on each iteration. For a list of predefined callback methods, see the [class definition](torch_train_test_loop.py). If a loop has multiple components, their callbacks are invoked in the following order:
 
