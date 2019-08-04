@@ -123,7 +123,7 @@ loop.is_testing`: set to True if testing, False otherwise.
 loop.epoch_desc`: set to 'train', 'valid' or 'test'.
 loop.epoch_num`: number of training epochs since instantiation of loop.
 
-loop.batch`: object yielded by current iterable dataset.
+loop.batch`: object yielded by iteration of current dataset.
 loop.batch_num`: batch number in current epoch.
 
 loop.optim_step_num`: optimization step number in current training run.
