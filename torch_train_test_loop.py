@@ -32,11 +32,11 @@ class LoopComponent():
     def on_train_begin(self, loop):   pass  # called by loop at start of training
     def on_epoch_begin(self, loop):   pass  # called by loop at start of each epoch
     def on_batch_begin(self, loop):   pass  # called by loop at start of each batch
-    def on_grads_reset(self, loop):   pass  # called by loop to zero out gradients
+    def on_grads_reset(self, loop):   pass  # called by loop to zero out gradients, if training
     def on_forward_pass(self, loop):  pass  # called by loop to compute forward pass
     def on_loss_compute(self, loop):  pass  # called by loop to compute model loss
-    def on_backward_pass(self, loop): pass  # called by loop to compute backward pass
-    def on_optim_step(self, loop):    pass  # called by loop to compute/schedule optim
+    def on_backward_pass(self, loop): pass  # called by loop to compute backward pass, if training
+    def on_optim_step(self, loop):    pass  # called by loop to compute/schedule optim, if training
     def on_batch_end(self, loop):     pass  # called by loop at end of each batch
     def on_epoch_end(self, loop):     pass  # called by loop at end of each epoch
     def on_train_end(self, loop):     pass  # called by loop at end of training
@@ -56,9 +56,9 @@ class TrainTestLoop():
         valid_data: iterable for which len() returns length.
 
     Methods:
-        train(n_epochs): train model for n_epochs: int.
-        test(train_data): test model on previously unseen train_data:
-            iterable for which len() returns length.
+        train(n_epochs): train/validate model for n_epochs: int.
+        test(train_data): test model for one epoch on previously unseen
+                train_data: iterable for which len() returns length.
         stop(): stop early and, if training and validating, invoke the
             'on_train_end' callbacks of all loop components. Any
             component of the loop can call stop() at any time.
