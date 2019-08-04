@@ -32,6 +32,7 @@ class LoopComponent():
     def on_train_begin(self, loop):   pass  # called by loop at start of training
     def on_epoch_begin(self, loop):   pass  # called by loop at start of each epoch
     def on_batch_begin(self, loop):   pass  # called by loop at start of each batch
+    def on_grads_reset(self, loop):   pass  # called by loop to zero out gradients
     def on_forward_pass(self, loop):  pass  # called by loop to compute forward pass
     def on_loss_compute(self, loop):  pass  # called by loop to compute model loss
     def on_backward_pass(self, loop): pass  # called by loop to compute backward pass
@@ -58,9 +59,9 @@ class TrainTestLoop():
         train(n_epochs): train model for n_epochs: int.
         test(train_data): test model on previously unseen train_data:
             iterable for which len() returns length.
-        stop(): stop early and, if training, invoke the 'on_train_end'
-            callbacks of all loop components. Note that any component
-            of the loop can call stop() at any time.
+        stop(): stop early and, if training and validating, invoke the
+            'on_train_end' callbacks of all loop components. Any
+            component of the loop can call stop() at any time.
 
     Sample usage:
         >>> loop = TrainTestLoop(model, components, train_data, valid_data)
@@ -83,6 +84,7 @@ class TrainTestLoop():
         self.model.train() if self.is_training else self.model.eval()
         with torch.no_grad() if not self.is_training else contextlib.suppress():
             self._components_do('on_epoch_begin')
+            if self.is_training: self._components_do('on_grads_reset')
             for self.batch_num, self.batch in enumerate(iter(data)):
                 self._components_do('on_batch_begin', 'on_forward_pass', 'on_loss_compute')
                 if self.is_training:
@@ -105,6 +107,7 @@ class TrainTestLoop():
         
     def test(self, test_data):
         try:
+            self.n_epochs = 1
             self._run_epoch(test_data, 'test')
         except EarlyStopException: pass
 
