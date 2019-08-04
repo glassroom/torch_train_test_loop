@@ -107,26 +107,26 @@ del loop.components[-1]
 The following variables are controlled by the loop instance and available to its components:
 
 ```
-loop.model`: PyTorch model.
-loop.components`: components.
-loop.train_data`: iterable of training data.
-loop.valid_data`: iterable of validation data.
+loop.model: PyTorch model.
+loop.components: components.
+loop.train_data: iterable of training data.
+loop.valid_data: iterable of validation data.
 
-loop.n_epochs`: number of epochs in current run.
-loop.n_batches`: number of batches in current epoch.
-loop.n_optim_steps`: number of optimization steps in current training run.
+loop.n_epochs: number of epochs in current run.
+loop.n_batches: number of batches in current epoch.
+loop.n_optim_steps: number of optimization steps in current training run.
 
-loop.is_training`: set to True if training, False otherwise.
-loop.is_validating`: set to True if validating, False otherwise.
-loop.is_testing`: set to True if testing, False otherwise.
+loop.is_training: set to True if training, False otherwise.
+loop.is_validating: set to True if validating, False otherwise.
+loop.is_testing: set to True if testing, False otherwise.
 
-loop.epoch_desc`: set to 'train', 'valid' or 'test'.
-loop.epoch_num`: number of training epochs since instantiation of loop.
+loop.epoch_desc: set to 'train', 'valid' or 'test'.
+loop.epoch_num: number of training epochs since instantiation of loop.
 
-loop.batch`: object yielded by iteration of current dataset.
-loop.batch_num`: batch number in current epoch.
+loop.batch: object yielded by iteration of current dataset.
+loop.batch_num: batch number in current epoch.
 
-loop.optim_step_num`: optimization step number in current training run.
+loop.optim_step_num: optimization step number in current training run.
 ```
 
 ## Installation
