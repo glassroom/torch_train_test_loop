@@ -12,9 +12,11 @@ class MainLoop(LoopComponent):
         loop.optimizer = MyOptimizer(loop.model.parameters(), lr=3e-4)
         loop.scheduler = MyScheduler(loop.optimizer, loop.n_optim_steps)
 
+    def on_grads_reset(self, loop):
+        loop.model.zero_grad()
+
     def on_forward_pass(self, loop):
         model, batch = (loop.model, loop.batch)
-        model.zero_grad()
         loop.scores = model(batch.data)
 
     def on_loss_compute(self, loop):
@@ -37,7 +39,8 @@ class SaveModel(LoopComponent):
         torch.save(loop.model.state_dict(), './model_state.pth')
         print("Saved.")
 
-loop = TrainTestLoop(my_model, [MainLoop(), SaveModel()], my_train_data, my_valid_data)
+loop = TrainTestLoop(model=my_model, components=[MainLoop(), SaveModel()],
+                     train_data=my_train_data, valid_data=my_valid_data)
 loop.train(n_epochs=10)
 ```
 Output:
@@ -56,9 +59,9 @@ If you regularly find yourself digging through code path dependencies to figure 
 
 **torch_train_test_loop** consists of just two classes, `TrainTestLoop` and `LoopComponent`, that work together:
 
-* `TrainTestLoop` contains barebones logic for running training/testing loops, keeping track of epochs and batches, setting a torch.no_grad() context for validating and testing phases, and managing other variables that control loop state. All other computations are performed by invoking callbacks of one or more `LoopComponent` instances, which access and modify loop state at predefined points on each iteration.
+* `TrainTestLoop` contains logic for running training/validation and testing loops. It manages epochs and batches, iterates over datasets, sets torch.no_grad() contexts for validating after each training epoch and for testing afterwards, and manages other variables that control loop state. All other computations are performed by invoking callbacks of one or more `LoopComponent` instances at predefined points on each iteration. For more details, see the [class docstring](torch_train_test_loop.py).
 
-* `LoopComponent` contains callback methods that are invoked by a `TrainTestLoop` instance at predefined points on each iteration. For a list of predefined callback methods, see the [class definition](torch_train_test_loop.py). If a loop has multiple components, their callbacks are invoked in the following order:
+* `LoopComponent` contains callback methods invoked by a `TrainTestLoop` instance at predefined points on each iteration. For a list of predefined callback methods, see the [class definition](torch_train_test_loop.py). If a loop has multiple components, their callbacks are invoked in the following order:
 
 ```
     Iteration
@@ -83,23 +86,46 @@ If you regularly find yourself digging through code path dependencies to figure 
 
 Each additional component thus adds new a layer of functionality to all predefined callback points in a loop.
 
-Loop components are stored in a standard Python list, so you can dynamically insert, delete, replace, and reorder them at any time:
+## Dynamic Manipulation of Loop Components
+
+Loop instances store components in a standard Python list, so they can be dynamically inserted, deleted, replaced, and reordered at any time:
 
 ```python
 # Create a train/test loop.
 my_components = (MyInitializer(), MyBatchProcessor(), MyOptimManager(), MyStats())
 loop = TrainTestLoop(my_model, my_components, train_data, valid_data)
 
-# Insert a new component in the second position.
+# Insert a new component in the second position to preprocess batches.
 loop.components.insert(1, MyPreprocessing())
 
 # Delete the last component.
 del loop.components[-1]
 ```
 
-The code is as simple as we could make it (e.g., we refrained from building in a fancier callback-handling mechanism) and as Pythonic as we could make it (e.g., when invoking a call method, we explicitly pass a reference to the loop object, instead of, say, dynamically binding callbacks to the loop object).  
+## Loop Variables
 
-By convention, components use "self" to refer to themselves and "loop" to refer to the calling loop.
+The following variables are controlled by the loop instance and available to its components:
+
+* `loop.model`: PyTorch model, passed on initialization (see docstring).
+* `loop.components`: list of components, passed on initialization (see docstring).
+* `loop.train_data`: iterable of training data, passed on initialization (see docstring).
+* `loop.valid_data`: iterable of validation data, passed on initialization (see docstring).
+
+* `loop.n_epochs`: number of epochs in the current run.
+* `loop.n_batches`: number of batches in the current epoch.
+* `loop.n_optim_steps`: number of optimization steps in the current training run.
+
+* `loop.is_training`: set to True if training, False otherwise.
+* `loop.is_validating`: set to True if validating, False otherwise.
+* `loop.is_testing`: set to True if testing, False otherwise.
+
+* `loop.epoch_desc`: set to 'train', 'valid' or 'test', depending on whether the loop is training, validating, or testing.
+* `loop.epoch_num`: number of training epochs that have been completed since instantiation of the loop.
+
+* `loop.batch`: object yielded by the current iterable dataset.
+* `loop.batch_num`: batch number in the current epoch.
+
+* `loop.optim_step_num`: optimization step number in the current training run.
 
 ## Installation
 
@@ -114,3 +140,7 @@ By convention, components use "self" to refer to themselves and "loop" to refer 
 The only requirement is a working installation of [PyTorch](https://pytorch.org/) on Python 3.
 
 Note: Tested only with PyTorch versions 1.0 and 1.1, on Ubuntu Linux 18.04 and Python 3.6+.
+
+## Notes
+
+The code is as simple as we could make it (e.g., we refrained from building in a fancier callback-handling mechanism for components) and as Pythonic as we could make it (e.g., when invoking a call method from a loop instance, we explicitly pass a reference to the loop object, instead of, say, dynamically binding callbacks to the loop object).
