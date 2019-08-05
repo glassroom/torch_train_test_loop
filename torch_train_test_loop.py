@@ -1,6 +1,8 @@
 import torch
 import contextlib
 
+TRAIN_DESC, VALID_DESC, TEST_DESC = ('train', 'valid', 'test')
+
 class EarlyStopException(Exception):
     pass
 
@@ -79,13 +81,13 @@ class TrainTestLoop():
 
     def _run_epoch(self, data, desc):
         self.n_batches, self.epoch_desc = (len(data), desc)
-        self.is_training, self.is_validating, self.is_testing = [desc == s for s in ('train', 'valid', 'test')]
+        self.is_training, self.is_validating, self.is_testing = [desc == s for s in (TRAIN_DESC, VALID_DESC, TEST_DESC)]
         assert [self.is_training, self.is_validating, self.is_testing].count(True) == 1
         self.model.train() if self.is_training else self.model.eval()
         with torch.no_grad() if not self.is_training else contextlib.suppress():
             self._components_do('on_epoch_begin')
-            if self.is_training: self._components_do('on_grads_reset')
             for self.batch_num, self.batch in enumerate(iter(data)):
+                if self.is_training: self._components_do('on_grads_reset')
                 self._components_do('on_batch_begin', 'on_forward_pass', 'on_loss_compute')
                 if self.is_training:
                     self._components_do('on_backward_pass', 'on_optim_step')
@@ -99,8 +101,8 @@ class TrainTestLoop():
         self._components_do('on_train_begin')
         for _ in range(n_epochs):
             try:
-                self._run_epoch(self.train_data, 'train')
-                self._run_epoch(self.valid_data, 'valid')
+                self._run_epoch(self.train_data, TRAIN_DESC)
+                self._run_epoch(self.valid_data, VALID_DESC)
                 self.epoch_num += 1
             except EarlyStopException: break
         self._components_do('on_train_end')
@@ -108,7 +110,7 @@ class TrainTestLoop():
     def test(self, test_data):
         try:
             self.n_epochs = 1
-            self._run_epoch(test_data, 'test')
+            self._run_epoch(test_data, TEST_DESC)
         except EarlyStopException: pass
 
     def stop(self):
