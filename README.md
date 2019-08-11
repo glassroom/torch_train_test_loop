@@ -53,7 +53,7 @@ Saved.
 
 We were unable to find a simple, composable, standalone tool for manipulating training loops *without* the overhead and complexity of a full-blown framework.
 
-If you regularly find yourself digging through code path dependencies to figure out how to try something new in your training loop, this tool is for you. It tries to do the bare minimum necessary for composing loops without getting in your way.  Also, the code meant to be easy to understand and modify -- under 70 lines of Python excluding comments.
+If you regularly find yourself digging through code path dependencies to figure out how to try something new in your training loop, this tool is for you. It tries to do the bare minimum necessary for composing loops without getting in your way.  Also, the code is meant to be easy to understand/modify -- under 70 lines of Python excluding comments.
 
 ## Overview
 
