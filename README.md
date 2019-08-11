@@ -53,13 +53,13 @@ Saved.
 
 We were unable to find a simple, composable, standalone tool for manipulating training loops *without* the overhead and complexity of a full-blown framework.
 
-If you regularly find yourself digging through code path dependencies to figure out how to try something new in your training loop, this tool is for you. It tries to do the bare minimum necessary for composing loops without getting in your way. The code is meant to be easy to understand and modify.
+If you regularly find yourself digging through code path dependencies to figure out how to try something new in your training loop, this tool is for you. It tries to do the bare minimum necessary for composing loops without getting in your way.  Also, the code meant to be easy to understand and modify -- under 70 lines of Python excluding comments.
 
 ## Overview
 
 **torch_train_test_loop** consists of just two classes, `TrainTestLoop` and `LoopComponent`, that work together:
 
-* `TrainTestLoop` contains logic for running training/validation and testing loops: It manages epochs and batches, iterates over datasets, sets a torch.no_grad() context for validating and testing, changes model state to train() or eval() as necessary, and manages other variables that control loop state. All other computations are performed by invoking callbacks of one or more `LoopComponent` instances at predefined points on each iteration. For more details, see the [class definition](torch_train_test_loop.py).
+* `TrainTestLoop` contains logic for running training/validation and testing loops: It manages epochs and batches, iterates over datasets, sets a torch.no_grad() context for validating and testing, changes model state to train() or eval() as necessary, and manages other variables that control loop state. All other computations are performed by invoking callbacks of one or more `LoopComponent` instances at predefined points on each iteration.
 
 * `LoopComponent` contains callback methods invoked by a `TrainTestLoop` instance at predefined points on each iteration. For a list of predefined callback methods, see the [class definition](torch_train_test_loop.py). If a loop has multiple components, their callbacks are invoked in the following order:
 
@@ -107,26 +107,28 @@ del loop.components[-1]
 The following variables are controlled by the loop instance and available to its components:
 
 ```
-loop.model: PyTorch model.
-loop.components: components.
-loop.train_data: iterable of training data.
-loop.valid_data: iterable of validation data.
+Variable             Description
+===================  =====================================================
+loop.model           PyTorch model
+loop.components      list of LoopComponent instances
+loop.train_data      iterable of training data
+loop.valid_data      iterable of validation data
 
-loop.n_epochs: number of epochs in current run.
-loop.n_batches: number of batches in current epoch.
-loop.n_optim_steps: number of optimization steps in current training run.
+loop.n_epochs        number of epochs in current run
+loop.n_batches       number of batches in current epoch
+loop.n_optim_steps   number of optimization steps in current training run
 
-loop.is_training: set to True if training, False otherwise.
-loop.is_validating: set to True if validating, False otherwise.
-loop.is_testing: set to True if testing, False otherwise.
+loop.is_training     set to True if training, False otherwise
+loop.is_validating   set to True if validating, False otherwise
+loop.is_testing      set to True if testing, False otherwise
 
-loop.epoch_desc: set to 'train', 'valid' or 'test'.
-loop.epoch_num: number of training epochs since instantiation of loop.
+loop.epoch_desc      set to 'train', 'valid' or 'test'
+loop.epoch_num       number of training epochs since instantiation of loop
 
-loop.batch: object yielded by iteration of current dataset.
-loop.batch_num: batch number in current epoch.
+loop.batch           object yielded by iteration of current dataset
+loop.batch_num       batch number in current epoch
 
-loop.optim_step_num: optimization step number in current training run.
+loop.optim_step_num  optimization step number in current training run
 ```
 
 ## Installation
