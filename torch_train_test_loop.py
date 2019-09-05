@@ -59,8 +59,8 @@ class TrainTestLoop():
 
     Methods:
         train(n_epochs): train/validate model for n_epochs: int.
-        test(train_data): test model for one epoch on previously unseen
-                train_data: iterable for which len() returns length.
+        test(test_data): test model for one epoch on previously unseen
+            test_data, an iterable for which len() returns length.
         stop(): stop early and, if training and validating, invoke the
             'on_train_end' callbacks of all loop components. Any
             component of the loop can call stop() at any time.
