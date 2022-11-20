@@ -55,6 +55,14 @@ We were unable to find a simple, composable, standalone tool for manipulating tr
 
 If you regularly find yourself digging through code path dependencies to figure out how to try something new in your training loop, this tool is for you. It tries to do the bare minimum necessary for composing loops without getting in your way.  Also, the code is meant to be easy to understand/modify -- under 70 lines of Python excluding comments.
 
+## Installation
+
+`pip install -e git+https://github.com/glassroom/torch_train_test_loop`
+
+Alternatively, you can download a single file to your project directory: `torch_train_test_loop/torch_train_test_loop.py`.
+
+The only dependency is PyTorch.
+
 ## Overview
 
 **torch_train_test_loop** consists of just two classes, `TrainTestLoop` and `LoopComponent`, that work together:
@@ -130,20 +138,6 @@ loop.batch_num       batch number in current epoch
 
 loop.optim_step_num  optimization step number in current training run
 ```
-
-## Installation
-
-1. Clone this repository.
-
-2. Copy the file `torch_train_test_loop.py` to your application directory.
-
-3. There is no step #3.
-
-## Requirements
-
-The only requirement is a working installation of [PyTorch](https://pytorch.org/) on Python 3.
-
-Note: Tested only with PyTorch versions 1.0 and 1.1, on Ubuntu Linux 18.04 and Python 3.6+.
 
 ## Notes
 
