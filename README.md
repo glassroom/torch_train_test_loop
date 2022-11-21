@@ -55,9 +55,11 @@ We were unable to find a simple, composable, standalone tool for manipulating tr
 
 If you regularly find yourself digging through code path dependencies to figure out how to try something new in your training loop, this tool is for you. It tries to do the bare minimum necessary for composing loops without getting in your way.  Also, the code is meant to be easy to understand/modify -- under 70 lines of Python excluding comments.
 
-## Installation
+## Installing
 
-`pip install git+https://github.com/glassroom/torch_train_test_loop`
+```
+pip install git+https://github.com/glassroom/torch_train_test_loop
+```
 
 Alternatively, you can download a single file to your project directory: `torch_train_test_loop/torch_train_test_loop.py`.
 
@@ -65,7 +67,7 @@ The only dependency is PyTorch.
 
 ## Overview
 
-**torch_train_test_loop** consists of just two classes, `TrainTestLoop` and `LoopComponent`, that work together:
+**torch_train_test_loop** consists of only two classes, `TrainTestLoop` and `LoopComponent`, that work together:
 
 * `TrainTestLoop` contains logic for running training/validation and testing loops: It manages epochs and batches, iterates over datasets, sets a torch.no_grad() context for validating and testing, changes model state to train() or eval() as necessary, and manages other variables that control loop state. All other computations are performed by invoking callbacks of one or more `LoopComponent` instances at predefined points on each iteration.
 
@@ -126,11 +128,11 @@ loop.n_epochs        number of epochs in current run
 loop.n_batches       number of batches in current epoch
 loop.n_optim_steps   number of optimization steps in current training run
 
-loop.is_training     set to True if training, False otherwise
-loop.is_validating   set to True if validating, False otherwise
-loop.is_testing      set to True if testing, False otherwise
+loop.is_training     set by loop to True if training, False otherwise
+loop.is_validating   set by loop to True if validating, False otherwise
+loop.is_testing      set by loop to True if testing, False otherwise
 
-loop.epoch_desc      set to 'train', 'valid' or 'test'
+loop.epoch_desc      set by loop to 'train', 'valid' or 'test'
 loop.epoch_num       number of training epochs since instantiation of loop
 
 loop.batch           object yielded by iteration of current dataset
