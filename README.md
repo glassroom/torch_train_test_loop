@@ -61,7 +61,7 @@ If you regularly find yourself digging through code path dependencies to figure 
 pip install git+https://github.com/glassroom/torch_train_test_loop
 ```
 
-Alternatively, you can download a single file to your project directory: `torch_train_test_loop/torch_train_test_loop.py`.
+Alternatively, you can download a single file to your project directory: [torch_train_test_loop.py](torch_train_test_loop/torch_train_test_loop.py]).
 
 The only dependency is PyTorch.
 
